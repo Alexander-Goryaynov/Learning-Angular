@@ -1,20 +1,27 @@
 import { Injectable } from '@angular/core';
 import { Product } from './product';
-import { PRODUCTS } from './mock-products';
 import { Observable, of } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
 
-  constructor() { }
+  private productsUrl = 'http://localhost:80/fakeServer.php';
+
+  constructor(private httpClient: HttpClient) { }
 
   getProduct(id: number): Observable<Product> {
-    return of(PRODUCTS.find(product => product.id === id));
+    return this.httpClient.get<Product>(this.productsUrl + '?id=' + id.toString());
   }
 
   getProducts(): Observable<Product[]> {
-    return of(PRODUCTS);
+    return this.httpClient.get<Product[]>(this.productsUrl);
   }
+  /*
+  POST-запрос выполняется так:
+  httpOptions = { headers: new HttpHeaders({ 'Content-Type': 'application/json' })};
+  this.http.post<Product>(this.productsUrl, product, httpOptions);
+  */
 }
